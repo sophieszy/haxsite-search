@@ -22,6 +22,7 @@ export class HaxsiteSearch extends DDDSuper(I18NMixin(LitElement)) {
     super();
     this.title = "";
     this.t = this.t || {};
+    this.poop = ""
     this.t = {
       ...this.t,
       title: "Title",
