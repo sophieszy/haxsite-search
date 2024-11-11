@@ -1,9 +1,6 @@
-/**
- * Copyright 2024 Sophie Szymaniak
- * @license Apache-2.0, see LICENSE for full text.
- */
 import { LitElement, html, css } from "lit";
 import "./hax-card.js";
+import "./site-overview.js";
 import { DDDSuper } from "@haxtheweb/d-d-d/d-d-d.js";
 import { I18NMixin } from "@haxtheweb/i18n-manager/lib/I18NMixin.js";
 
@@ -21,19 +18,34 @@ export class HaxsiteSearch extends DDDSuper(I18NMixin(LitElement)) {
 
   constructor() {
     super();
-    this.value = null;
-    this.title = '';
-    this.loading = false;
+    this.jsonUrl = '';
     this.items = [];
+    this.siteName = '';
+    this.description = '';
+    this.logo = '';
+    this.theme = '';
+    this.hexCode = '';
+    this.created = '';
+    this.lastUpdated = '';
+    this.icon = '';
   }
 
   // Lit reactive properties
   static get properties() {
     return {
-      title: { type: String },
-      loading: { type: Boolean, reflect: true },
-      items: { type: Array, },
-      value: { type: String },
+      jsonUrl: { type: String, attribute: "json-url" },
+      items: { type: Array }, // Main array for items data
+      siteName: { type: String },
+      description: { type: String },
+      logo: { type: String },
+      theme: { type: String },
+      hexCode: { type: String },
+      created: { type: String },
+      lastUpdated: { type: String },
+      icon: { type: String },
+
+
+
     };
   }
 
@@ -58,79 +70,80 @@ export class HaxsiteSearch extends DDDSuper(I18NMixin(LitElement)) {
         gap: 90px;
       }
 
-      details {
-        margin: 16px;
-        padding: 16px;
-        background-color: blue;
-      }
-      summary {
-        font-size: 24px;
-        padding: 8px;
-        color: white;
-        font-size: 42px;
-        color: var(--ddd-theme-default-coalyGray)''
-      }
-      input {
-        font-size: 20px;
-        line-height: 40px;
-        width: 100%;
-      }
     `;
+  }
+
+  updated(changedProperties) {
+    if (changedProperties.has("jsonUrl") && this.jsonUrl) {
+      this.fetchData(this.jsonUrl);
+    }
+  }
+
+  async fetchData(url) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Failed to fetch data");
+
+      const data = await response.json();
+
+      // Extract metadata and site details if they exist
+      const siteMetadata = data.metadata?.site || {};
+      const themeMetadata = data.metadata?.theme || {};
+
+      // Assign the extracted data to the component properties
+      this.siteName = data.title || 'Untitled Site';
+      this.description = data.description || 'No description available.';
+      this.logo = data.metadata?.site?.logo || '';
+      this.theme = themeMetadata.name || 'None';
+      this.hexCode = themeMetadata.variables?.hexCode || '#000000';
+      this.created = siteMetadata.created || 'Unknown';
+      this.lastUpdated = siteMetadata.lastUpdated || 'Unknown';
+      this.icon = themeMetadata.variables?.icon || 'info'; // Default icon
+
+      // Items for cards (if any)
+      this.items = data.items || [];
+
+    } catch (error) {
+      console.error("Error fetching JSON data:", error);
+    }
   }
 
   // Lit render the HTML
   render() {
     return html`
-    <h2>${this.title}</h2>
-    <details open>
-      <summary>Search inputs</summary>
-      <div>
-        <input id="input" placeholder="Enter Site Location" @input="${this.inputChanged}" />
-      </div>
-    </details>
-    <div class="results">
+        <!-- Site Overview -->
+        <site-overview
+            .siteName="${this.siteName}"
+            .description="${this.description}"
+            .logo="${this.logo}"
+            .theme="${this.theme}"
+            .hexCode="${this.hexCode}"
+            .created="${this.created}"
+            .lastUpdated="${this.lastUpdated}"
+            .icon="${this.icon}">
+        </site-overview>
 
-
-      ${this.items.map((item, index) => html`
-      <hax-card
-        source="${item.links[0].href}"
-        title="${item.data[0].title}"
-        alt="${item.data[0].title}"
-        secondary_creator= "${item.data[0].secondary_creator}"
-      ></hax-card>
-      `)}
-    </div>
+        <!-- Cards for each item -->
+        <div class="cards">
+            ${this.items.length
+        ? this.items.map(
+          item => html`
+                    <hax-card
+                        .title="${item.title}"
+                        .description="${item.description}"
+                        .lastUpdated="${item.lastUpdated}"
+                        .image="${item.image}"
+                        .contentLink="${item.contentLink}"
+                         .sourceLink="${item.sourceLink}">
+                        </hax-card>`
+        )
+        : html`<p>Loading data or no items found...</p>`
+      }
+        </div>
     `;
   }
 
-  inputChanged(e) {
-    this.value = this.shadowRoot.querySelector('#input').value;
-  }
-  // life cycle will run when anything defined in `properties` is modified
-  updated(changedProperties) {
-    // see if value changes from user input and is not empty
-    if (changedProperties.has('value') && this.value) {
-      this.updateResults(this.value);
-    }
-    else if (changedProperties.has('value') && !this.value) {
-      this.items = [];
-    }
-    // @debugging purposes only
-    if (changedProperties.has('items') && this.items.length > 0) {
-      console.log(this.items);
-    }
-  }
 
-  updateResults(value) {
-    this.loading = true;
-    fetch(`https://images-api.nasa.gov/search?media_type=image&q=${value}`).then(d => d.ok ? d.json() : {}).then(data => {
-      if (data.collection) {
-        this.items = [];
-        this.items = data.collection.items;
-        this.loading = false;
-      }
-    });
-  }
 
   /**
    * haxProperties integration via file reference
