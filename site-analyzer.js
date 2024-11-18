@@ -52,7 +52,7 @@ class siteAnalyzer extends DDDSuper(I18NMixin(LitElement)) {
 /* Style for the analyze button */
 .search-container button {
   padding: 12px;
-  background-color: #007BFF;
+  background-color: var(--ddd-theme-default-creekTeal);
   color: white;
   font-size: 16px;
   border: none;
@@ -63,12 +63,13 @@ class siteAnalyzer extends DDDSuper(I18NMixin(LitElement)) {
 }
 
 .search-container button:disabled {
-  background-color: #ccc;
+  background-color: var(--ddd-theme-default-limestoneGray);
   cursor: not-allowed;
 }
 
 .search-container button:hover:not(:disabled) {
-  background-color: #0056b3;
+  background-color: var(--ddd-theme-default-potential75
+  );
 }
     
     
@@ -117,12 +118,15 @@ class siteAnalyzer extends DDDSuper(I18NMixin(LitElement)) {
 
     render() {
         return html`
+
+
         <div class = "search-container">
             <input 
             class = "search-input"
              value="${this.url}"
              placeholder="${this.placeholder}"
              @input="${this.updateUrl}"
+             @keydown="${this.handleKeydown}"
              >
             <button ?disabled ="${!this.isValid}" @click="${this.analyze}"> Analyze </button>
             </div>
@@ -136,6 +140,12 @@ class siteAnalyzer extends DDDSuper(I18NMixin(LitElement)) {
 
     updateUrl(event) {
         this.url = event.target.value;
+    }
+
+    handleKeydown(event) {
+        if (event.key === 'Enter' && this.isValid) {
+            this.analyze(); // Trigger analyze method on Enter key
+        }
     }
 
     analyze() {

@@ -140,21 +140,25 @@ export class HaxsiteSearch extends DDDSuper(I18NMixin(LitElement)) {
         const slug = item.slug ? item.slug.replace(/^\//, "") : ''; // Remove leading slash if present
         const contentLink = slug ? new URL(slug, baseUrl).href : '';
 
-
         // Construct sourceLink using the base URL and the location
         const location = item.location; // Ensure it ends with /index.html
         const sourceLink = location ? new URL(location, baseUrl).href : '';
 
-        const image = item.images && item.images.length > 0
-          ? new URL(item.images[0], baseUrl).href // Resolve the first image
-          : 'https://haxtheweb.org/files/hax (1).png'; // Fallback if no images exist
+        const imageFile = item.metadata?.files?.find(file => file.type.startsWith('image/'));
+        const imageUrl = imageFile ? new URL(imageFile.url, baseUrl).href : 'https://haxtheweb.org/files/hax (1).png'; // fallback
+
+
+        const readTime = item.metadata?.readtime || 0;
+
 
         return {
           ...item,
           updated: this.formatDate(item.metadata?.updated),
-          image,
+          imageUrl,
           contentLink, // Link to the rendered content page
-          sourceLink   // Link to the source file (index.html)
+          sourceLink,   // Link to the source file (index.html)
+          readTime,
+
         };
       });
 
@@ -162,6 +166,10 @@ export class HaxsiteSearch extends DDDSuper(I18NMixin(LitElement)) {
       console.error("Error fetching JSON data:", error);
     }
   }
+
+
+
+
 
   // Lit render the HTML
   render() {
@@ -187,9 +195,11 @@ export class HaxsiteSearch extends DDDSuper(I18NMixin(LitElement)) {
                      .title="${item.title}"
                      .description="${item.description}"
                      .lastUpdated="${item.updated}"
-                     .image="${item.image}"
+                     .imageUrl="${item.imageUrl}"
                      .contentLink="${item.contentLink}"
-                     .sourceLink="${item.sourceLink}">
+                     .sourceLink="${item.sourceLink}"
+                     .readTime = "${item.readTime}"
+                     >
             </hax-card>`
         )
         : html`<p>Loading data or no items found...</p>`

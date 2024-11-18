@@ -10,22 +10,25 @@ export class haxCard extends DDDSuper(I18NMixin(LitElement)) {
     super();
     this.title = "Untitled";
     this.description = "No description available.";
-    this.image = "";
+    this.imageUrl = "";
     this.lastUpdated = "";
     this.contentLink = "";
     this.sourceLink = "";
     this.tags = [];
+    this.readTime = 0;
   }
 
   static get properties() {
     return {
       sourceLink: { type: String },
       contentLink: { type: String },
-      image: { type: String },
+      imageUrl: { type: String },
       title: { type: String },
       description: { type: String },
       lastUpdated: { type: String },
-      tags: { type: Array }
+      tags: { type: Array },
+      readTime: { type: Number },
+
 
 
     };
@@ -49,7 +52,7 @@ export class haxCard extends DDDSuper(I18NMixin(LitElement)) {
   border: var(--ddd-border-sm);
   background-color: var(--ddd-theme-default-potential0);
   width: 400px; /* Let the height adjust based on content */
-  height: 500px;
+  height: 550px;
   padding: 10px;
   margin: 8px;
   overflow-y: auto;
@@ -57,21 +60,15 @@ export class haxCard extends DDDSuper(I18NMixin(LitElement)) {
   font-weight: var(--ddd-font-weight-regular, 400);
   transition: background-color 0.3s;
   background-color: var(--ddd-theme-default-errorLight);
+  text-decoration: none;
 }
 
 
-
-
-
-
-    .card div {
-    max-width: 200px;
-    }
-
     .card img {
     display: block;
-    width: 240px;
-    height: 180px;
+    width: 350px;
+    height: auto;
+    max-height: 320px;
     }
 
     .card:hover{
@@ -85,19 +82,35 @@ export class haxCard extends DDDSuper(I18NMixin(LitElement)) {
   font-weight: var(--ddd-font-weight-bold, 700);
   font-size: 32px; 
   margin-bottom: 8px;
-  margin: var(--ddd-spacing-4)
+  margin: var(--ddd-spacing-4);
+  text-decoration: none;
+  color: var(--ddd-theme-default-link);
 }
 
 .last-updated
 {
-  margin:var(--ddd-spacing-2)
+  margin:var(--ddd-spacing-2);
+  color: var(--ddd-theme-default-slateGray);
+}
+
+.description {
+  margin: var(-ddd-spacing-2);
+  color: var(--ddd-theme-default-slateGray);
 }
 
 
+.read-time {
+  margin:var(--ddd-spacing-2);
+  color: var(--ddd-theme-default-slateGray);
+}
 
+a {
+  text-decoration: none;
+}
 
-
-
+.link {
+ margin: var(--ddd-spacing-2);
+}
 
     `];
   }
@@ -108,43 +121,37 @@ export class haxCard extends DDDSuper(I18NMixin(LitElement)) {
     return html`
 
 
-          <div class="card">
+<div class="card">
+  <a
+    class="card-link"
+    href="${this.contentLink}"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <img src="${this.imageUrl}" alt="" />
+    <div class="title">${this.title}</div>
 
-          <a
-                class="link"
-                href="${this.contentLink}"
-                target="_blank"
-                rel="noopener noreferrer"
-                >
+    <div class="last-updated">
+      <strong>Last Updated: </strong>${this.lastUpdated}
+    </div>
 
-            <img src="${this.image}" alt=""/> 
+    <div class="description">
+      <strong>Description</strong>: ${this.description}
+    </div>
 
-            
-
-            <div class="title">${this.title}</div>
-            <div class="last-updated">
-             Last Updated:  ${this.lastUpdated}
-            </div>
-            <div class="description"> Description: ${this.description}</div>
-            <div class="tags">
-              ${this.tags.map(
-      (tag) => html`<span class="tag">${tag}</span>`
-    )}
-            </div>
-            
-           
-        
-              <a
-                class="link"
-                href="${this.sourceLink}"
-                target="_blank"
-                rel="noopener noreferrer"
-                > Click here to open source file!</a
+    <div class="read-time">
+      Read Time: ${this.readTime > 0 ? this.readTime + ' min' : 'N/A'}
+    </div>
+  </a>
+  <a
+        class="link"
+         href="${this.sourceLink}"
+         target="_blank"
+         rel="noopener noreferrer"
+        > Click here to open source file!</a
               >
 
-              </a> 
-          
-          </div>
+</div>
 
             
               

@@ -1,8 +1,11 @@
 import { LitElement, html, css } from "lit";
 import { DDDSuper } from "@haxtheweb/d-d-d/d-d-d.js";
+import { I18NMixin } from "@haxtheweb/i18n-manager/lib/I18NMixin.js";
+import '@haxtheweb/simple-icon/simple-icon.js';
+
 ;
 
-class SiteOverview extends LitElement {
+class SiteOverview extends DDDSuper(I18NMixin(LitElement)) {
   static get tag() {
     return "site-overview";
   }
@@ -36,10 +39,8 @@ class SiteOverview extends LitElement {
     return css`
       :host {
         display: block;
-        padding: 16px;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        background-color: #f9f9f9;
+        padding: var(--ddd-spacing-2);;
+        border: 1px solid var(--ddd-theme-default-limestoneLight);
       }
 
       .overview-container {
@@ -47,19 +48,19 @@ class SiteOverview extends LitElement {
         flex-direction: column;
         align-items: center;
         gap: 16px;
-        padding: 20px;
-        border: var(--ddd-border-sm) solid #883333;
-        border-radius: 12px;
-        background-color: #ffffff;
+        padding: var(--ddd-spacing-4);;
+        border: var(--ddd-border-sm) solid ;
+        background-color: var(--ddd-theme-default-errorLight);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        max-width: 500px; /* Optional to limit the width */
+        max-width: 400px; 
+        max-height: 650px auto;
         margin: 20px auto;
 }
 
       .logo {
         
         object-fit: cover;
-        max-width: 450px;
+        max-width: 350px;
         height: auto;
         margin: 10px;
       }
@@ -101,11 +102,15 @@ class SiteOverview extends LitElement {
       <div class="overview-container">
         <!-- Display logo if available -->
 
-       <img src="${this.logo}" alt="" class="logo" /> 
+       <img src="${this.logo}" alt="" class="logo" />
+       
+
 
         <div class="site-name">Site Name: ${this.siteName}</div>
+        
 
-        <div class="description"> Description: ${this.description}</div>
+        <div class="description"> Description: ${this.description} <simple-icon icon="info"></simple-icon>
+        </div>
 
         <div class="theme">
           Theme: <span style="color: ${this.hexCode}">${this.theme}</span>
