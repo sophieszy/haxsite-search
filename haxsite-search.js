@@ -70,6 +70,29 @@ export class HaxsiteSearch extends DDDSuper(I18NMixin(LitElement)) {
         gap: 90px;
       }
 
+      .cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Ensure cards fill the space */
+  gap: 16px; /* Space between cards */
+  justify-items: center; /* Center the cards within the grid cells */
+  padding: 16px;
+}
+
+@media (min-width: 600px) {
+  .cards {
+    grid-template-columns: repeat(2, 1fr); /* 2 cards per row on medium screens */
+  }
+}
+
+@media (min-width: 1024px) {
+  .cards {
+    grid-template-columns: repeat(4, 1fr); /* 4 cards per row on large screens */
+  }
+}
+
+
+
+
     `;
   }
 
@@ -79,12 +102,23 @@ export class HaxsiteSearch extends DDDSuper(I18NMixin(LitElement)) {
     }
   }
 
+
+  formatDate(timestamp) {
+    if (!timestamp) return "N/A";
+    const date = new Date(timestamp * 1000); // Assuming timestamp is in seconds
+    return date.toLocaleDateString();
+  }
+
+
+
   async fetchData(url) {
     try {
       const response = await fetch(url);
       if (!response.ok) throw new Error("Failed to fetch data");
 
       const data = await response.json();
+      const baseUrl = new URL('.', this.jsonUrl).href;
+
 
       // Extract metadata and site details if they exist
       const siteMetadata = data.metadata?.site || {};
@@ -93,15 +127,36 @@ export class HaxsiteSearch extends DDDSuper(I18NMixin(LitElement)) {
       // Assign the extracted data to the component properties
       this.siteName = data.title || 'Untitled Site';
       this.description = data.description || 'No description available.';
-      this.logo = data.metadata?.site?.logo || '';
+      this.logo = `${baseUrl}${data.metadata?.site?.logo || ''}`;
       this.theme = themeMetadata.name || 'None';
       this.hexCode = themeMetadata.variables?.hexCode || '#000000';
-      this.created = siteMetadata.created || 'Unknown';
-      this.lastUpdated = siteMetadata.lastUpdated || 'Unknown';
+      this.created = this.formatDate(siteMetadata.created);
+      this.lastUpdated = this.formatDate(siteMetadata.updated);
       this.icon = themeMetadata.variables?.icon || 'info'; // Default icon
 
       // Items for cards (if any)
-      this.items = data.items || [];
+      this.items = data.items.map(item => {
+        // Construct contentLink using the base URL and the slug
+        const slug = item.slug ? item.slug.replace(/^\//, "") : ''; // Remove leading slash if present
+        const contentLink = slug ? new URL(slug, baseUrl).href : '';
+
+
+        // Construct sourceLink using the base URL and the location
+        const location = item.location; // Ensure it ends with /index.html
+        const sourceLink = location ? new URL(location, baseUrl).href : '';
+
+        const image = item.images && item.images.length > 0
+          ? new URL(item.images[0], baseUrl).href // Resolve the first image
+          : 'https://haxtheweb.org/files/hax (1).png'; // Fallback if no images exist
+
+        return {
+          ...item,
+          updated: this.formatDate(item.metadata?.updated),
+          image,
+          contentLink, // Link to the rendered content page
+          sourceLink   // Link to the source file (index.html)
+        };
+      });
 
     } catch (error) {
       console.error("Error fetching JSON data:", error);
@@ -128,14 +183,14 @@ export class HaxsiteSearch extends DDDSuper(I18NMixin(LitElement)) {
             ${this.items.length
         ? this.items.map(
           item => html`
-                    <hax-card
-                        .title="${item.title}"
-                        .description="${item.description}"
-                        .lastUpdated="${item.lastUpdated}"
-                        .image="${item.image}"
-                        .contentLink="${item.contentLink}"
-                         .sourceLink="${item.sourceLink}">
-                        </hax-card>`
+             <hax-card
+                     .title="${item.title}"
+                     .description="${item.description}"
+                     .lastUpdated="${item.updated}"
+                     .image="${item.image}"
+                     .contentLink="${item.contentLink}"
+                     .sourceLink="${item.sourceLink}">
+            </hax-card>`
         )
         : html`<p>Loading data or no items found...</p>`
       }

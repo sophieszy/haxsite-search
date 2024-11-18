@@ -19,10 +19,12 @@
       margin: var(--ddd-spacing-2);
     }
 
-    haxsite-search {
-      margin: var(--ddd-spacing-2);
-      border: var(--ddd-border-md);
-      border-radius: var(--ddd-radius-lg);
+    h1 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 100px;
+
     }
 
     haxsite-search:hover {
@@ -40,10 +42,17 @@
 
 <body>
   <div id="demo">
-    <h1>haxsite-search</h1>
+    <h1>HaxSite Search! </h1>
+
+
+
+
     <!-- this is going to do whatever the tag's defaults are -->
-    <h2>Default</h2>
+    <h2>Enter any hax based site below and hit analyze to get a site overview and cards breaking down the website.
+      Make sure to include the full web address (such as having https:// before the name)
+    </h2>
     <site-analyzer> </site-analyzer>
+
   </div>
   <script type="module" src="./site-analyzer.js"></script>
 </body>

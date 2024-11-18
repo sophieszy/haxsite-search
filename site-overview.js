@@ -3,37 +3,37 @@ import { DDDSuper } from "@haxtheweb/d-d-d/d-d-d.js";
 ;
 
 class SiteOverview extends LitElement {
-    static get tag() {
-        return "site-overview";
-    }
+  static get tag() {
+    return "site-overview";
+  }
 
-    static get properties() {
-        return {
-            siteName: { type: String },
-            description: { type: String },
-            logo: { type: String },
-            theme: { type: String },
-            hexCode: { type: String },
-            created: { type: String },
-            lastUpdated: { type: String },
-            icon: { type: String },
-        };
-    }
+  static get properties() {
+    return {
+      siteName: { type: String },
+      description: { type: String },
+      logo: { type: String },
+      theme: { type: String },
+      hexCode: { type: String },
+      created: { type: String },
+      lastUpdated: { type: String },
+      icon: { type: String },
+    };
+  }
 
-    constructor() {
-        super();
-        this.siteName = '';
-        this.description = '';
-        this.logo = '';
-        this.theme = '';
-        this.hexCode = '';
-        this.created = '';
-        this.lastUpdated = '';
-        this.icon = '';
-    }
+  constructor() {
+    super();
+    this.siteName = '';
+    this.description = '';
+    this.logo = '';
+    this.theme = '';
+    this.hexCode = '';
+    this.created = '';
+    this.lastUpdated = '';
+    this.icon = '';
+  }
 
-    static get styles() {
-        return css`
+  static get styles() {
+    return css`
       :host {
         display: block;
         padding: 16px;
@@ -46,20 +46,28 @@ class SiteOverview extends LitElement {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 12px;
-      }
+        gap: 16px;
+        padding: 20px;
+        border: var(--ddd-border-sm) solid #883333;
+        border-radius: 12px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 500px; /* Optional to limit the width */
+        margin: 20px auto;
+}
 
       .logo {
-        width: 80px;
-        height: 80px;
+        
         object-fit: cover;
-        border-radius: 50%;
-        border: 2px solid #ccc;
+        max-width: 450px;
+        height: auto;
+        margin: 10px;
       }
 
       .site-name {
         font-size: 1.5em;
         font-weight: bold;
+        font: Roboto Slab (ddd-font-secondary) [--ddd-font-secondary]
       }
 
       .description {
@@ -84,15 +92,16 @@ class SiteOverview extends LitElement {
         color: var(--icon-color, #007bff);
       }
     `;
-    }
+  }
 
-    render() {
-        return html`
+  render() {
+
+
+    return html`
       <div class="overview-container">
         <!-- Display logo if available -->
-        ${this.logo
-                ? html`<img src="${this.logo}" alt="Site Logo" class="logo" />`
-                : html`<span class="icon">${this.icon}</span>`}
+
+       <img src="${this.logo}" alt="" class="logo" /> 
 
         <div class="site-name">Site Name: ${this.siteName}</div>
 
@@ -108,7 +117,7 @@ class SiteOverview extends LitElement {
         </div>
       </div>
     `;
-    }
+  }
 }
 
 customElements.define(SiteOverview.tag, SiteOverview);
