@@ -81,7 +81,6 @@ export class haxCard extends DDDSuper(I18NMixin(LitElement)) {
   font-family: var(--ddd-font-secondary, Roboto Slab);
   font-weight: var(--ddd-font-weight-bold, 700);
   font-size: 32px; 
-  margin-bottom: 8px;
   margin: var(--ddd-spacing-4);
   text-decoration: none;
   color: var(--ddd-theme-default-link);
@@ -132,7 +131,7 @@ a {
     <div class="title">${this.title}</div>
 
     <div class="last-updated">
-      <strong>Last Updated: </strong>${this.lastUpdated}
+      <strong>Last Updated</strong>: ${this.lastUpdated}
     </div>
 
     <div class="description">
@@ -140,7 +139,7 @@ a {
     </div>
 
     <div class="read-time">
-      Read Time: ${this.readTime > 0 ? this.readTime + ' min' : 'N/A'}
+      <strong>Read Time</strong>: ${this.readTime > 0 ? this.readTime + ' min' : 'N/A'}
     </div>
   </a>
   <a

@@ -20,6 +20,7 @@ class SiteOverview extends DDDSuper(I18NMixin(LitElement)) {
       created: { type: String },
       lastUpdated: { type: String },
       icon: { type: String },
+      baseUrl: { type: String }
     };
   }
 
@@ -33,6 +34,7 @@ class SiteOverview extends DDDSuper(I18NMixin(LitElement)) {
     this.created = '';
     this.lastUpdated = '';
     this.icon = '';
+    this.baseUrl = '';
   }
 
   static get styles() {
@@ -48,9 +50,9 @@ class SiteOverview extends DDDSuper(I18NMixin(LitElement)) {
         flex-direction: column;
         align-items: center;
         gap: 16px;
-        padding: var(--ddd-spacing-4);;
+        padding: var(--ddd-spacing-4);
         border: var(--ddd-border-sm) solid ;
-        background-color: var(--ddd-theme-default-errorLight);
+        background-color: var(--ddd-theme-default-link80 );
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         max-width: 400px; 
         max-height: 650px auto;
@@ -66,31 +68,42 @@ class SiteOverview extends DDDSuper(I18NMixin(LitElement)) {
       }
 
       .site-name {
-        font-size: 1.5em;
+        font-size: 30px;
         font-weight: bold;
-        font: Roboto Slab (ddd-font-secondary) [--ddd-font-secondary]
+        font-family: var(--ddd-font-secondary, Roboto Slab);
+        color: var(--ddd-theme-default-potentialMidnight);
+
+      }
+
+      .site-name a {
+        text-decoration: none;
+        font-weight: bold;
+        color: inherit;
+
+
       }
 
       .description {
-        font-size: 1em;
-        color: #555;
+        font-size: 20px;
+        color: var(--ddd-theme-default-infoLight);
         text-align: center;
         max-width: 300px;
       }
 
       .theme {
-        font-size: 0.9em;
-        color: #777;
+        font-size: 20px;
+        color: var(--ddd-theme-default-infoLight);
+
       }
 
       .dates {
-        font-size: 0.8em;
-        color: #999;
+        font-size: 20px;
+        color: var(--ddd-theme-default-infoLight);
       }
 
       .icon {
-        font-size: 2em;
-        color: var(--icon-color, #007bff);
+        font-size: 20px;
+        color: var(--icon-color, var(--ddd-theme-default-link80));
       }
     `;
   }
@@ -100,28 +113,28 @@ class SiteOverview extends DDDSuper(I18NMixin(LitElement)) {
 
     return html`
       <div class="overview-container">
-        <!-- Display logo if available -->
+    <!-- Display logo if available -->
+    <img src="${this.logo}" alt="" class="logo" />
 
-       <img src="${this.logo}" alt="" class="logo" />
-       
+    <div class="site-name">
+      <strong>Site Name</strong>: 
+      <a href="${this.baseUrl}" target="_blank" rel="noopener noreferrer">${this.siteName} <simple-icon icon="info"></simple-icon></a>
+    </div>
 
+    <div class="description">
+      <strong>Description</strong>: ${this.description}
+    </div>
 
-        <div class="site-name">Site Name: ${this.siteName}</div>
-        
+    <div class="theme">
+      <strong>Theme</strong>: <span style="color: ${this.hexCode}">${this.theme}</span>
+    </div>
 
-        <div class="description"> Description: ${this.description} <simple-icon icon="info"></simple-icon>
-        </div>
-
-        <div class="theme">
-          Theme: <span style="color: ${this.hexCode}">${this.theme}</span>
-        </div>
-
-        <div class="dates">
-          <div>Created: ${this.created}</div>
-          <div>Last Updated: ${this.lastUpdated}</div>
-        </div>
-      </div>
-    `;
+    <div class="dates">
+      <div><strong>Created</strong>: ${this.created}</div>
+      <div><strong>Last Updated</strong>: ${this.lastUpdated}</div>
+    </div>
+  </div>
+`;
   }
 }
 

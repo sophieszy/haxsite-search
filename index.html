@@ -37,8 +37,23 @@
       color: var(--ddd-primary-17);
     }
 
+    .instructions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: var(--ddd-spacing-4);
+      border: 1px solid var(--ddd-border-color);
+      border-radius: var(--ddd-border-radius-md);
+      background-color: var(--ddd-theme-default-link80);
+      box-shadow: var(--ddd-boxShadow-sm);
+    }
+
     h2 {
-      margin: var(--ddd-spacing-20);
+      font-size: var(--ddd-font-size-lg);
+      color: var(--ddd-text-2);
+      max-width: 70%;
+      text-align: center;
+      margin: 0;
     }
   </style>
   <title>haxsite-search</title>
@@ -50,12 +65,11 @@
 
 
 
-
-    <!-- this is going to do whatever the tag's defaults are -->
-    <h2>Enter any hax based site below and hit analyze to get a site overview and cards breaking down the website.
-      Make sure to include the full web address (such as having https:// before the name)
-    </h2>
-    <site-analyzer> </site-analyzer>
+    <div class="instructions">
+      <h2> Enter any HAX-based site below and press "Analyze" to get a site overview and card breakdown.
+        Ensure the URL starts with "https://" or "http://". </h2>
+      <site-analyzer> </site-analyzer>
+    </div>
 
   </div>
   <script type="module" src="./site-analyzer.js"></script>

@@ -28,6 +28,7 @@ export class HaxsiteSearch extends DDDSuper(I18NMixin(LitElement)) {
     this.created = '';
     this.lastUpdated = '';
     this.icon = '';
+    this.baseUrl = '';
   }
 
   // Lit reactive properties
@@ -43,7 +44,7 @@ export class HaxsiteSearch extends DDDSuper(I18NMixin(LitElement)) {
       created: { type: String },
       lastUpdated: { type: String },
       icon: { type: String },
-
+      baseUrl: { type: String },
 
 
     };
@@ -132,7 +133,7 @@ export class HaxsiteSearch extends DDDSuper(I18NMixin(LitElement)) {
       this.hexCode = themeMetadata.variables?.hexCode || '#000000';
       this.created = this.formatDate(siteMetadata.created);
       this.lastUpdated = this.formatDate(siteMetadata.updated);
-      this.icon = themeMetadata.variables?.icon || 'info'; // Default icon
+      this.baseUrl = new URL('.', this.jsonUrl).href;
 
       // Items for cards (if any)
       this.items = data.items.map(item => {
@@ -183,7 +184,8 @@ export class HaxsiteSearch extends DDDSuper(I18NMixin(LitElement)) {
             .hexCode="${this.hexCode}"
             .created="${this.created}"
             .lastUpdated="${this.lastUpdated}"
-            .icon="${this.icon}">
+            .icon="${this.icon}"
+            .baseUrl="${this.baseUrl}">
         </site-overview>
 
         <!-- Cards for each item -->
